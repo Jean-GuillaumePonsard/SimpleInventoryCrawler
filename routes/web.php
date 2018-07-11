@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function (\App\Management\DishwasherManagement $dishwasherManagement) {
+    return view('home', ['productsList' => $dishwasherManagement->load()]);
 });
 
 Auth::routes();

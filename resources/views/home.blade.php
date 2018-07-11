@@ -1,23 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+                    @foreach($productsList as $product)
+                        @include('products.display', ['product' => $product])
+                    @endforeach
                 </div>
             </div>
+            @auth()
+                <div class="col-sm-4">
+                    I am logged in
+                </div>
+            @endauth
         </div>
     </div>
-</div>
 @endsection

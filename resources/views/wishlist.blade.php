@@ -10,11 +10,23 @@
                     @endforeach
                 </div>
             </div>
-            @auth()
-                <div class="col-sm-4">
-                    Here is your wishlist, you can remove any item you don't want anymore
-                </div>
-            @endauth
+            <div class="col-sm-4">
+                @auth()
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Your wish list</h4>
+                            <p>
+                                Welcome {{ \Illuminate\Support\Facades\Auth::user()->name }},
+                                <br>
+                                Here is your wishlist, you can consult your list and remove any item you don't want anymore.
+                            </p>
+                            <div style="display: flex;align-items: center;justify-content: center">
+                                <button class="btn btn-primary" onclick="location.href='{{url('/home')}}'">Go back to homepage</button>
+                            </div>
+                        </div>
+                    </div>
+                @endauth
+            </div>
         </div>
     </div>
 @endsection
@@ -24,7 +36,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         actionOnSubmittedForm = function(form)
         {
-            console.log($(form).parents('.product.card'));
             $(form).parents('.product.card').replaceWith();
         }
     });

@@ -96,6 +96,7 @@
             sendForm = function(e) {
                 e.preventDefault();
                 form = $(this);
+                form.find('button[type=submit]').prop('disabled', true);
 
                 $.ajax({
                     method: $(this).attr('method'),

@@ -1,5 +1,5 @@
-<div class="product card" style="width: 18rem">
-    <img class="card-img-top" src="{{$product->d_img_url}}">
+<div class="product card col-sm-6" style="display: flex; flex-direction: row;">
+    <img style="height: 200px; width: auto;padding: unset;" src="{{$product->d_img_url}}">
     <div class="card-body">
         <h5 class="card-title">{{$product->d_name}}</h5>
         @if($product->is_active == false)

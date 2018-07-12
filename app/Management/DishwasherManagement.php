@@ -20,15 +20,14 @@ class DishwasherManagement
         // First I need to use Goutte
         // 1st page only right now
         try {
-            $dishwashers = $this->findDishWashersByGoutte();
-            // Then get data from the database
-            $storedData = $this->getAll();
-
-            $this->updateProducts($dishwashers, $storedData);
-        } catch (\Exception $exception) {
-            // TODO : Ignore if errors while loading new data ?
+            $products = $this->findDishWashersByGoutte();
+            if(!empty($products)) {
+                // Then get data from the database
+                $storedData = $this->getAll();
+                $this->updateProducts($products, $storedData);
+            }
+        } catch (\Throwable $exception) {
         }
-
 
         return $this->getAll();
     }
@@ -69,8 +68,7 @@ class DishwasherManagement
 
     public function getAll()
     {
-        $storedDishwasher = Product::all();
-        return $storedDishwasher;
+        return Product::all();
     }
 
     /**
@@ -80,52 +78,53 @@ class DishwasherManagement
     private function updateProducts($newData, $storedData)
     {
         // if $storedData is an empty collection then insert all the data
-        if($storedData->isEmpty()) {
-            // Store all the data to the database
-            foreach ($newData as $currentData)
-            {
-                $this->insertNewProduct($currentData);
-            }
-        } else {
-            // Array of Product object
-            $toDeactivate = array();
-            $toReactivate = array();
+        if(!empty($newData)) {
+            if($storedData->isEmpty()) {
+                // Store all the data to the database
+                foreach ($newData as $currentData)
+                {
+                    $this->insertNewProduct($currentData);
+                }
+            } else {
+                // Array of Product object
+                $toDeactivate = array();
+                $toReactivate = array();
 
-            foreach ($storedData as $keyStoredData => $data) {
-                $testArray = array("d_name" => $data->d_name, "d_img_url" => $data->d_img_url);
-                $keyNewData = array_search($testArray, $newData, true);
+                foreach ($storedData as $keyStoredData => $data) {
+                    $testArray = array("d_name" => $data->d_name, "d_img_url" => $data->d_img_url);
+                    $keyNewData = array_search($testArray, $newData, true);
 
-                if($keyNewData !== false) {
-                    unset($newData[$keyNewData]);
-                    // If the storedData is deactivated, it needs to be reactivated
-                    if(!$data->is_active) {
-                        $toReactivate[] = $storedData[$keyStoredData];
-                    }
-                } else {
-                    // If the storedData is already deactivated, then I don't need to update it
-                    if($data->is_active) {
-                        $toDeactivate[] = $storedData[$keyStoredData];
+                    if($keyNewData !== false) {
+                        unset($newData[$keyNewData]);
+                        // If the storedData is deactivated, it needs to be reactivated
+                        if(!$data->is_active) {
+                            $toReactivate[] = $storedData[$keyStoredData];
+                        }
+                    } else {
+                        // If the storedData is already deactivated, then I don't need to update it
+                        if($data->is_active) {
+                            $toDeactivate[] = $storedData[$keyStoredData];
+                        }
                     }
                 }
-            }
 
-            // Store all the data to the database
-            // TODO Factorise this code with the one above
-            foreach ($newData as $currentData) {
-                $this->insertNewProduct($currentData);
-            }
+                // Store all the data to the database
+                // TODO Factorise this code with the one above
+                foreach ($newData as $currentData) {
+                    $this->insertNewProduct($currentData);
+                }
 
-            // Deactivate outdated content
-            foreach ($toDeactivate as $productToDeactivate) {
-                $this->deactivateProduct($productToDeactivate);
-            }
+                // Deactivate outdated content
+                foreach ($toDeactivate as $productToDeactivate) {
+                    $this->deactivateProduct($productToDeactivate);
+                }
 
-            // Reactivate useful content
-            foreach ($toReactivate as $productToReactivate) {
-                $this->reactivateProduct($productToReactivate);
+                // Reactivate useful content
+                foreach ($toReactivate as $productToReactivate) {
+                    $this->reactivateProduct($productToReactivate);
+                }
             }
         }
-
     }
 
     protected function insertNewProduct($inputs)

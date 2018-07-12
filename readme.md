@@ -33,6 +33,11 @@ Run ```php artisan key:generate```
 
 Run ```php artisan migrate```
 
+**Warning:** The database must be created in mysql before running this command.
+
+
+### Launch
+
 Run ```php artisan serve``` to start a local php server
 
 The application is now available on [http://localhost:8000](http://localhost:8000)

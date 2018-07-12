@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-lg-8 col-md-8">
                 <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
                     @foreach($productsList as $product)
                         @if($product->is_active)
@@ -12,12 +12,14 @@
                     @endforeach
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-lg-4 col-md-2">
                 @auth()
                     <div class="card"  style="position: fixed;">
                         <div class="card-body">
                             <p>You can check your wish list by clicking the following button:</p>
-                            <button class="btn btn-primary" onclick="location.href='{{url('/wishlist')}}'">Go to my Wish list</button>
+                            <div style="display: flex; justify-content: center; align-items: flex-end;">
+                                <button class="btn btn-primary" onclick="location.href='{{url('/wishlist')}}'">Go to my Wish list</button>
+                            </div>
                         </div>
                     </div>
                 @else

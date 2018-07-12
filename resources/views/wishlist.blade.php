@@ -3,14 +3,14 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-lg-8">
                 <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
                     @foreach($productsList as $product)
                         @include('products.display', ['product' => $product])
                     @endforeach
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-lg-4 col-sm-6">
                 @auth()
                     <div class="card">
                         <div class="card-body">

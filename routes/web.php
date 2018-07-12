@@ -11,15 +11,12 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/{home}', 'HomeController@index')->name('home')->where('home', '(home)?');
 
+// Wish list management
+// the route /wishlist/product is only available with ajax
 Route::post('/wishlist/product', 'WishlistController@addProduct');
-Route::post('/wishlist/products');
 Route::delete('/wishlist/product', 'WishlistController@deleteProduct');
-Route::delete('/wishlist/products');
 Route::get('/wishlist', 'WishlistController@index')->name('wishlist');
-// There is no other action that we want the user to do

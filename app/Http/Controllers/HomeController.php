@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Management\DishwasherManagement;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -13,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+
     }
 
     /**
@@ -21,8 +22,8 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(DishwasherManagement $dishwasherManagement)
     {
-        return view('home');
+        return view('home', ['productsList' => $dishwasherManagement->load()]);
     }
 }

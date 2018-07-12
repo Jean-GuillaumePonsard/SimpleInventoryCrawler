@@ -13,7 +13,7 @@ class CreateDishwashersTable extends Migration
      */
     public function up()
     {
-        Schema::create('dishwashers', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
             $table->string('d_name');
             $table->longText('d_img_url');
@@ -29,6 +29,6 @@ class CreateDishwashersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dishwashers');
+        Schema::dropIfExists('products');
     }
 }

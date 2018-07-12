@@ -11,10 +11,15 @@
 |
 */
 
-Route::get('/', function (\App\Management\DishwasherManagement $dishwasherManagement) {
-    return view('home', ['productsList' => $dishwasherManagement->load()]);
-});
+Route::get('/', 'HomeController@index');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::post('/wishlist/product', 'WishlistController@addProduct');
+Route::post('/wishlist/products');
+Route::delete('/wishlist/product', 'WishlistController@deleteProduct');
+Route::delete('/wishlist/products');
+Route::get('/wishlist', 'WishlistController@index')->name('wishlist');
+// There is no other action that we want the user to do

@@ -75,5 +75,46 @@
             @yield('content')
         </main>
     </div>
+
+<script>
+@yield('scripts')
+    @auth
+        document.addEventListener('DOMContentLoaded', function()
+        {
+            addListeners();
+
+            function addListeners()
+            {
+                $(function(){
+                    $(document).on('submit', '.addProduct', sendForm);
+                });
+                $(function(){
+                    $(document).on('submit', '.deleteProduct', sendForm);
+                });
+            }
+
+            sendForm = function(e) {
+                e.preventDefault();
+                form = $(this);
+
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    dataType: "json"
+                })
+                .done(function(data) {
+                    actionOnSubmittedForm(form);
+                })
+                .fail(function(data) {
+                    $.each(data.responseJSON, function (key, value) {
+                        alert('error');
+                    });
+                });
+            }
+        });
+    @endauth
+</script>
+
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 namespace App\Management;
 
-use App\Dishwasher;
+use App\Product;
 use Goutte;
 use Mockery\Exception;
 
@@ -69,7 +69,7 @@ class DishwasherManagement
 
     public function getAll()
     {
-        $storedDishwasher = Dishwasher::all();
+        $storedDishwasher = Product::all();
         return $storedDishwasher;
     }
 
@@ -130,7 +130,7 @@ class DishwasherManagement
 
     protected function insertNewProduct($inputs)
     {
-        $dishwasher = new Dishwasher();
+        $dishwasher = new Product();
         $dishwasher->d_name = $inputs['d_name'];
         $dishwasher->d_img_url = $inputs['d_img_url'];
         $dishwasher->is_active = true;
@@ -139,19 +139,19 @@ class DishwasherManagement
         return true;
     }
 
-    protected function updateProduct(Dishwasher $product, $inputs)
+    protected function updateProduct(Product $product, $inputs)
     {
         $product->fill($inputs);
         $product->saveOrFail();
         return true;
     }
 
-    protected function deactivateProduct(Dishwasher $product)
+    protected function deactivateProduct(Product $product)
     {
         return $this->updateProduct($product, array("is_active" => false));
     }
 
-    protected function reactivateProduct(Dishwasher $product)
+    protected function reactivateProduct(Product $product)
     {
         return $this->updateProduct($product, array("is_active" => true));
     }

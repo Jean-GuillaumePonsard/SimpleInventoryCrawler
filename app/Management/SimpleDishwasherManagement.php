@@ -4,9 +4,8 @@ namespace App\Management;
 
 use App\Product;
 use Goutte;
-use Mockery\Exception;
 
-class DishwasherManagement
+class SimpleDishwasherManagement implements ProductCrawlerInterface
 {
 
     protected $defaultUrl = 'https://www.appliancesdelivered.ie/dishwashers';
@@ -16,6 +15,12 @@ class DishwasherManagement
     protected $defaultType = 'dishwasher';
 
     public function load()
+    {
+        $this->update();
+        return $this->getAll();
+    }
+
+    public function update()
     {
         // First I need to use Goutte
         // 1st page only right now
@@ -27,10 +32,17 @@ class DishwasherManagement
                 $this->updateProducts($products, $storedData);
             }
         } catch (\Throwable $exception) {
+            // An error happened (Database or Goutte failed)
+            return false;
         }
-
-        return $this->getAll();
+        return true;
     }
+
+    public function getAll()
+    {
+        return Product::all();
+    }
+
 
     private function findDishWashersByGoutte()
     {
@@ -64,11 +76,6 @@ class DishwasherManagement
         }
 
         return $results;
-    }
-
-    public function getAll()
-    {
-        return Product::all();
     }
 
     /**

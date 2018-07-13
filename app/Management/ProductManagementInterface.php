@@ -2,8 +2,9 @@
 
 namespace App\Management;
 
-interface ProductCrawlerInterface
+interface ProductManagementInterface
 {
+
     public function load();
 
     public function update();

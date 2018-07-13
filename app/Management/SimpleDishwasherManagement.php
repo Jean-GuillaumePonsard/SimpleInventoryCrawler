@@ -3,16 +3,24 @@
 namespace App\Management;
 
 use App\Product;
-use Goutte;
+use App\SimpleGoutteCrawler;
 
-class SimpleDishwasherManagement implements ProductCrawlerInterface
+class SimpleDishwasherManagement implements ProductManagementInterface
 {
-
     protected $defaultUrl = 'https://www.appliancesdelivered.ie/dishwashers';
 
     protected $sorting = '?sort=price_asc&page=';
 
     protected $defaultType = 'dishwasher';
+
+    protected $closureToUse = 'ad_dishwasher';
+
+    protected $crawler;
+
+    public function __construct()
+    {
+        $this->crawler = new SimpleGoutteCrawler();
+    }
 
     public function load()
     {
@@ -25,7 +33,7 @@ class SimpleDishwasherManagement implements ProductCrawlerInterface
         // First I need to use Goutte
         // 1st page only right now
         try {
-            $products = $this->findDishWashersByGoutte();
+            $products = $this->crawler->findData($this->defaultUrl, $this->sorting, '.search-results-product.row', $this->closureToUse);
             if(!empty($products)) {
                 // Then get data from the database
                 $storedData = $this->getAll();
@@ -43,40 +51,6 @@ class SimpleDishwasherManagement implements ProductCrawlerInterface
         return Product::all();
     }
 
-
-    private function findDishWashersByGoutte()
-    {
-        $currentPage = 1;
-        $results = array();
-        $continue = true;
-
-        while ($continue)
-        {
-            $crawler = Goutte::request('GET', $this->defaultUrl.$this->sorting.$currentPage);
-
-            $founds = array();
-            $founds[] = $crawler->filter('.search-results-product.row')->each(function ($node) {
-                return [
-                    'd_name' => $node->filter('.product-description h4 a')->text(),
-                    'd_img_url' => $node->filter('.product-image img')->attr('src')
-                ];
-            });
-
-            if(empty($founds[0])) {
-                $continue = false;
-            } else {
-                foreach ($founds[0] as $key => $found) {
-                    $results[] = $found;
-                }
-            }
-
-            unset($founds);
-
-            $currentPage++;
-        }
-
-        return $results;
-    }
 
     /**
      * @param $newData

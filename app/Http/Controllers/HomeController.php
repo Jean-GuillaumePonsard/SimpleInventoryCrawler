@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Management\ProductCrawlerInterface;
+use App\Management\ProductManagementInterface;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -22,7 +22,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ProductCrawlerInterface $dishwasherManagement)
+    public function index(ProductManagementInterface $dishwasherManagement)
     {
         return view('home', ['productsList' => $dishwasherManagement->load()]);
     }

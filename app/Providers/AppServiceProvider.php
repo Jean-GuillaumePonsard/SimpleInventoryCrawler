@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            'App\Management\ProductCrawlerInterface',
+            'App\Management\ProductManagementInterface',
             'App\Management\SimpleDishwasherManagement'
         );
     }

@@ -32,7 +32,7 @@ class WishlistController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Show the user's wish list.
      *
      * @return \Illuminate\Http\Response
      */

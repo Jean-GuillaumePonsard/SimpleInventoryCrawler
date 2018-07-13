@@ -1,7 +1,8 @@
 <div class="product card col-lg-6 col-md-12" style="display: flex; flex-direction: row;">
-    <img style="height: 200px; width: auto;padding: unset;" src="{{$product->d_img_url}}">
+    <img style="height: 200px; width: auto;padding: unset;" src="{{$product->product_img_url}}">
     <div class="card-body">
-        <h5 class="card-title">{{$product->d_name}}</h5>
+        <h5 class="card-title">{{$product->product_name}}</h5>
+        <h6 class="card-text">Price: €{{$product->product_price}}</h6>
         @if($product->is_active == false)
             <small>This product is discontinued and should be removed from your wish list</small>
         @endif

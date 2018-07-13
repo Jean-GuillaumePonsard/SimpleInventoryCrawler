@@ -71,8 +71,9 @@ Class SimpleGoutteCrawler
             case 'ad_dishwasher':
                 return function (Crawler $node) {
                     return [
-                        'd_name' => $node->filter('.product-description h4 a')->text(),
-                        'd_img_url' => $node->filter('.product-image img')->attr('src')
+                        'product_name' => $node->filter('.product-description h4 a')->text(),
+                        'product_img_url' => $node->filter('.product-image img')->attr('src'),
+                        'product_price' => trim($node->filter('.product-description h3.section-title')->text(), '$£€')
                     ];
                 };
 

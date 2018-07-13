@@ -48,7 +48,8 @@ class SimpleDishwasherManagement implements ProductManagementInterface
 
     public function getAll()
     {
-        return Product::all();
+        //the default behavior is to order by name Asc
+        return Product::orderBy('product_name')->get();
     }
 
 
@@ -60,50 +61,44 @@ class SimpleDishwasherManagement implements ProductManagementInterface
     {
         // if $storedData is an empty collection then insert all the data
         if(!empty($newData)) {
-            if($storedData->isEmpty()) {
-                // Store all the data to the database
-                foreach ($newData as $currentData)
-                {
-                    $this->insertNewProduct($currentData);
-                }
-            } else {
-                // Array of Product object
-                $toDeactivate = array();
-                $toReactivate = array();
+            // I will just match the reference, then the meta data
+            // Like that I will be able to update product that changed just their prices or image
 
+            // This allow to keep the same key
+            $newDataProductName = array_diff(array_combine(array_keys($newData), array_column($newData, 'product_name')), [null]);
+
+            if(!$storedData->isEmpty()) {
+                // storedData is an Array of Product object
                 foreach ($storedData as $keyStoredData => $data) {
-                    $testArray = array("d_name" => $data->d_name, "d_img_url" => $data->d_img_url);
-                    $keyNewData = array_search($testArray, $newData, true);
+                    $keyNewData = array_search($data->product_name, $newDataProductName, true);
 
                     if($keyNewData !== false) {
-                        unset($newData[$keyNewData]);
-                        // If the storedData is deactivated, it needs to be reactivated
-                        if(!$data->is_active) {
-                            $toReactivate[] = $storedData[$keyStoredData];
+                        // Adding is_active true to update the product if it was deactivated
+                        $newData[$keyNewData]['is_active'] = true;
+                        // Check if the stored data is up to date for the other fields
+                        $productArray = array("product_name" => $data->product_name,
+                                                "product_img_url" => $data->product_img_url,
+                                                "product_price" => $data->product_price,
+                                                "is_active" => $data->is_active);
+
+                        if($productArray != $newData[$keyNewData]) {
+                            $this->updateProduct($data, $newData[$keyNewData]);
                         }
+                        unset($productArray);
+                        unset($newData[$keyNewData]);
                     } else {
                         // If the storedData is already deactivated, then I don't need to update it
                         if($data->is_active) {
-                            $toDeactivate[] = $storedData[$keyStoredData];
+                            // Deactivate outdated content
+                            $this->deactivateProduct($data);
                         }
                     }
                 }
+            }
 
-                // Store all the data to the database
-                // TODO Factorise this code with the one above
-                foreach ($newData as $currentData) {
-                    $this->insertNewProduct($currentData);
-                }
-
-                // Deactivate outdated content
-                foreach ($toDeactivate as $productToDeactivate) {
-                    $this->deactivateProduct($productToDeactivate);
-                }
-
-                // Reactivate useful content
-                foreach ($toReactivate as $productToReactivate) {
-                    $this->reactivateProduct($productToReactivate);
-                }
+            // Store all the data to the database
+            foreach ($newData as $currentData) {
+                $this->insertNewProduct($currentData);
             }
         }
     }
@@ -111,8 +106,9 @@ class SimpleDishwasherManagement implements ProductManagementInterface
     protected function insertNewProduct($inputs)
     {
         $dishwasher = new Product();
-        $dishwasher->d_name = $inputs['d_name'];
-        $dishwasher->d_img_url = $inputs['d_img_url'];
+        $dishwasher->product_name = $inputs['product_name'];
+        $dishwasher->product_img_url = $inputs['product_img_url'];
+        $dishwasher->product_price = $inputs['product_price'];
         $dishwasher->is_active = true;
 
         $dishwasher->saveOrFail();

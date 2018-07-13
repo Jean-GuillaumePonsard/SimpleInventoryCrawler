@@ -15,8 +15,9 @@ class CreateDishwashersTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('d_name');
-            $table->longText('d_img_url');
+            $table->string('product_name');
+            $table->longText('product_img_url');
+            $table->unsignedDecimal('product_price', 6, 2);
             $table->boolean('is_active');
             $table->timestamps();
         });

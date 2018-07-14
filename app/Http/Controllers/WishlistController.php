@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddProductWishListRequest;
+use App\Http\Requests\DeleteProductWishListRequest;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,32 +42,17 @@ class WishlistController extends Controller
         return view('wishlist', ['productsList' => $this->user()->products()->orderBy('product_name')->get()]);
     }
 
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-           'product' => 'required|exists:products,id|unique:user_product,product_id,null,null,user_id,'.Auth::id()
-        ]);
-    }
-
-    // TODO use a true validator
     /**
      * addProduct function:
      * Allow to add a product into the user's wish list
      *
-     * @param Request $request
+     * @param AddProductWishListRequest $request
      * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      */
-    public function addProduct(Request $request)
+    public function addProduct(AddProductWishListRequest $request)
     {
-        $validator = $this->validator($request->all());
-
-        if($validator->fails()) {
-            // TODO set Error
-            throw new ValidationException($validator, null, 'error');
-        }
-
-        $this->user()->products()->attach(array($request->product));
+        $this->user()->products()->attach($request->all(array('product')));
 
         return response()->json();
     }
@@ -75,27 +61,13 @@ class WishlistController extends Controller
      * deleteProduct:
      * Remove the product from the authenticated user's wish list
      *
-     * @param Request $request
+     * @param DeleteProductWishListRequest $request
      * @return \Illuminate\Http\JsonResponse
      * @throws ValidationException
      */
-    public function deleteProduct(Request $request)
+    public function deleteProduct(DeleteProductWishListRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'product' => [
-                'required',
-                Rule::exists('user_product', 'product_id')->where(function ($query) {
-                    $query->where('user_id', Auth::id());
-                })
-            ]
-        ]);
-
-        if($validator->fails()) {
-            // TODO set Error
-            throw new ValidationException($validator, null, 'error');
-        }
-
-        $this->user()->products()->detach(array($request->product));
+        $this->user()->products()->detach($request->all(array('product')));
 
         return response()->json();
     }

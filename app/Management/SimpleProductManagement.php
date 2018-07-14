@@ -5,29 +5,45 @@ namespace App\Management;
 use App\Product;
 use App\SimpleGoutteCrawler;
 
-class SimpleDishwasherManagement implements ProductManagementInterface
+class SimpleProductManagement implements ProductManagementInterface
 {
     protected $defaultUrl = 'https://www.appliancesdelivered.ie/dishwashers';
 
     protected $sorting = '?sort=price_asc&page=';
 
+    // As there is no other product to currently look for, I set dishwasher as default
     protected $defaultType = 'dishwasher';
 
     protected $closureToUse = 'ad_dishwasher';
 
     protected $crawler;
 
+    /**
+     * SimpleProductManagement constructor.
+     */
     public function __construct()
     {
         $this->crawler = new SimpleGoutteCrawler();
     }
 
+    /**
+     * Implementation of the "load" function required by the ProductManagementInterface
+     * Updates the data and return the updated collection
+     *
+     * @return mixed
+     */
     public function load()
     {
         $this->update();
         return $this->getAll();
     }
 
+    /**
+     * Implementation of the "update" function required by the ProductManagementInterface
+     * Updates the products using Goutte crawler to find data
+     *
+     * @return bool
+     */
     public function update()
     {
         // First I need to use Goutte
@@ -46,6 +62,12 @@ class SimpleDishwasherManagement implements ProductManagementInterface
         return true;
     }
 
+    /**
+     * Implementation of the "getAll" function required by the ProductManagementInterface
+     * Returns all products ordered by product_name
+     *
+     * @return mixed
+     */
     public function getAll()
     {
         //the default behavior is to order by name Asc
@@ -54,10 +76,12 @@ class SimpleDishwasherManagement implements ProductManagementInterface
 
 
     /**
+     * Compares database data with new data to update the database
+     *
      * @param $newData
      * @param $storedData (Must be a collection of Products)
      */
-    private function updateProducts($newData, $storedData)
+    protected function updateProducts($newData, $storedData)
     {
         // if $storedData is an empty collection then insert all the data
         if(!empty($newData)) {
@@ -81,10 +105,13 @@ class SimpleDishwasherManagement implements ProductManagementInterface
                                                 "product_price" => $data->product_price,
                                                 "is_active" => $data->is_active);
 
+                        // If data is not equal, then I must update the database
                         if($productArray != $newData[$keyNewData]) {
                             $this->updateProduct($data, $newData[$keyNewData]);
                         }
                         unset($productArray);
+                        // If a product is found, then It is not a new data anymore and can be safely removed
+                        // Also reduce the size of the array
                         unset($newData[$keyNewData]);
                     } else {
                         // If the storedData is already deactivated, then I don't need to update it
@@ -103,6 +130,12 @@ class SimpleDishwasherManagement implements ProductManagementInterface
         }
     }
 
+    /**
+     * Creates and inserts a new product using Eloquent
+     *
+     * @param $inputs
+     * @return bool
+     */
     protected function insertNewProduct($inputs)
     {
         $dishwasher = new Product();
@@ -115,6 +148,13 @@ class SimpleDishwasherManagement implements ProductManagementInterface
         return true;
     }
 
+    /**
+     * Updates a product using Eloquent
+     *
+     * @param Product $product
+     * @param $inputs
+     * @return bool
+     */
     protected function updateProduct(Product $product, $inputs)
     {
         $product->fill($inputs);
@@ -122,15 +162,64 @@ class SimpleDishwasherManagement implements ProductManagementInterface
         return true;
     }
 
+    /**
+     * Deactivates a product
+     *
+     * @param Product $product
+     * @return bool
+     */
     protected function deactivateProduct(Product $product)
     {
         return $this->updateProduct($product, array("is_active" => false));
     }
 
+    /**
+     * Reactivates a product
+     *
+     * @param Product $product
+     * @return bool
+     */
     protected function reactivateProduct(Product $product)
     {
         return $this->updateProduct($product, array("is_active" => true));
     }
 
+    /**
+     * Returns the default type of product this class will ask to get in the url
+     *
+     * @return string
+     */
+    public function getDefaultType()
+    {
+        return $this->defaultType;
+    }
 
+    /**
+     * Set the default type of product this class will ask to get in the url
+     *
+     * @param string $defaultType
+     */
+    public function setDefaultType($defaultType)
+    {
+        $this->defaultType = $defaultType;
+    }
+
+    /**
+     * Get the closure name this class will use with the crawler
+     *
+     * @return string
+     */
+    public function getClosureName()
+    {
+        return $this->closureToUse;
+    }
+
+    /**
+     * Set the closure name this class will use with the crawler
+     * @param string $closureToUse
+     */
+    public function setClosureName($closureToUse)
+    {
+        $this->closureToUse = $closureToUse;
+    }
 }

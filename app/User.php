@@ -27,6 +27,11 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * This is the relation between users and products. A user can own multiple products
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function products()
     {
         return $this->belongsToMany('App\Product', 'user_product');

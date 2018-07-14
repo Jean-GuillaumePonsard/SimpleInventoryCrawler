@@ -8,6 +8,7 @@ class Ajax
 {
     /**
      * Handle an incoming request.
+     * Verify if the request is an ajax request
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next

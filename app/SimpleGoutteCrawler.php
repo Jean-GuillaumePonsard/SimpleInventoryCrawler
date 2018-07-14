@@ -65,6 +65,12 @@ Class SimpleGoutteCrawler
         return $results;
     }
 
+    /**
+     * This convert the closure name to the real function required
+     *
+     * @param $closureName
+     * @return \Closure|null
+     */
     private function getClosure($closureName)
     {
         switch ($closureName) {

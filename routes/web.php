@@ -11,8 +11,10 @@
 |
 */
 
+// Registering and Login routes
 Auth::routes();
 
+// Home page of the website
 Route::get('/{home}', 'HomeController@index')->name('home')->where('home', '(home)?');
 
 // Wish list management

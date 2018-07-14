@@ -10,7 +10,7 @@ class HomeController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @return void
+     * @return HomeController
      */
     public function __construct()
     {
@@ -18,9 +18,10 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Show the main page of the web site
      *
-     * @return \Illuminate\Http\Response
+     * @param ProductManagementInterface $dishwasherManagement
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(ProductManagementInterface $dishwasherManagement)
     {

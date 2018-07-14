@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             'App\Management\ProductManagementInterface',
-            'App\Management\SimpleDishwasherManagement'
+            'App\Management\SimpleProductManagement'
         );
     }
 }

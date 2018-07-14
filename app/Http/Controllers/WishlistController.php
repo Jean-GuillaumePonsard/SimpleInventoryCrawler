@@ -23,7 +23,7 @@ class WishlistController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @return void
+     * @return WishlistController
      */
     public function __construct()
     {
@@ -38,7 +38,7 @@ class WishlistController extends Controller
      */
     public function index()
     {
-        return view('wishlist', ['productsList' => $this->user()->products]);
+        return view('wishlist', ['productsList' => $this->user()->products()->orderBy('product_name')->get()]);
     }
 
     protected function validator(array $data)
@@ -49,6 +49,14 @@ class WishlistController extends Controller
     }
 
     // TODO use a true validator
+    /**
+     * addProduct function:
+     * Allow to add a product into the user's wish list
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws ValidationException
+     */
     public function addProduct(Request $request)
     {
         $validator = $this->validator($request->all());
@@ -63,6 +71,14 @@ class WishlistController extends Controller
         return response()->json();
     }
 
+    /**
+     * deleteProduct:
+     * Remove the product from the authenticated user's wish list
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws ValidationException
+     */
     public function deleteProduct(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -83,16 +99,4 @@ class WishlistController extends Controller
 
         return response()->json();
     }
-
-    public function update()
-    {
-
-    }
-
-    public function destroy()
-    {
-
-    }
-
-
 }

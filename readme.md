@@ -53,6 +53,9 @@ Run ```php artisan migrate```
 
 Run ```php artisan serve``` to start a local php server
 
+**For Windows users:** If your antivirus is Avast, you need to add an exception for the server.php file.
+Avast considers this Laravel file as a [threat](https://github.com/laravel/framework/issues/23809).
+
 The application is now available on [http://localhost:8000](http://localhost:8000)
 
 

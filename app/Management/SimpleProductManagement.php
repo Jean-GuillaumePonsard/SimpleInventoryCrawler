@@ -23,7 +23,7 @@ class SimpleProductManagement implements ProductManagementInterface
      */
     public function __construct()
     {
-        $this->crawler = new SimpleGoutteCrawler();
+        $this->crawler = new SimpleGoutteCrawler($this->defaultUrl);
     }
 
     /**
@@ -49,7 +49,7 @@ class SimpleProductManagement implements ProductManagementInterface
         // First I need to use Goutte
         // 1st page only right now
         try {
-            $products = $this->crawler->findData($this->defaultUrl, $this->sorting, '.search-results-product.row', $this->closureToUse);
+            $products = $this->crawler->findData($this->sorting, '.search-results-product.row', $this->closureToUse);
             if(!empty($products)) {
                 // Then get data from the database
                 $storedData = $this->getAll();

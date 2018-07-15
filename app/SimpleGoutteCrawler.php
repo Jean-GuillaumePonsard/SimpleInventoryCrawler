@@ -15,9 +15,11 @@ use Symfony\Component\DomCrawler\Crawler;
 Class SimpleGoutteCrawler
 {
 
-    public function __construct()
-    {
+    private $url;
 
+    public function __construct(String $url)
+    {
+        $this->url = $url;
     }
 
     /**
@@ -26,14 +28,13 @@ Class SimpleGoutteCrawler
      * The main function of the trait which will allow the class to use Goutte to find data.
      * Each closure function must be created in the getClosure switch to ensure the code
      *
-     * @param $defaultUrl
      * @param $sorting
      * @param $loopPoint
      * @param $closureName
      * @return array
      * @throws \Exception when Goutte request and filtering fails
      */
-    public function findData($defaultUrl, $sorting, $loopPoint, $closureName)
+    public function findData($sorting, $loopPoint, $closureName)
     {
         $currentPage = 1;
         $results = array();
@@ -41,7 +42,7 @@ Class SimpleGoutteCrawler
 
         while ($continue)
         {
-            $crawler = Goutte::request('GET', $defaultUrl.$sorting.$currentPage);
+            $crawler = Goutte::request('GET', $this->url.$sorting.$currentPage);
             $founds = array();
             try {
                 $founds[] = $crawler->filter($loopPoint)->each($this->getClosure($closureName));
@@ -86,6 +87,22 @@ Class SimpleGoutteCrawler
             default:
                 return null;
         }
+    }
+
+    /**
+     * @return String
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param String $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
     }
 
 }

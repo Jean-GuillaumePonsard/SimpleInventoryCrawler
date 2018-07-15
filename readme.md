@@ -1,5 +1,18 @@
 ## Simple Inventory Crawler
 
+### Prerequisites
+
+As this project is based on the Laravel framework, you need to install:
+- Mysql
+- PHP >= 7.1.3
+- OpenSSL PHP Extension
+- PDO PHP Extension
+- Mbstring PHP Extension
+- Tokenizer PHP Extension
+- XML PHP Extension
+- Ctype PHP Extension
+- JSON PHP Extension
+
 ### Installation
 
 Run this command to clone the repository:
@@ -41,3 +54,10 @@ Run ```php artisan migrate```
 Run ```php artisan serve``` to start a local php server
 
 The application is now available on [http://localhost:8000](http://localhost:8000)
+
+
+You can view a list of product from the Appliances Delivered dishwashers section.
+
+You can register and log in.
+
+When you are logged in, you add and remove products from your wish list.

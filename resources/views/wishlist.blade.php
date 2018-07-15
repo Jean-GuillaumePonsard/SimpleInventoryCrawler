@@ -33,6 +33,8 @@
 
 
 @section('scripts')
+    @include('products.ajaxFormScript')
+
     document.addEventListener('DOMContentLoaded', function () {
         actionOnSubmittedForm = function(form)
         {

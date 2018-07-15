@@ -36,6 +36,8 @@
 @endsection
 
 @section('scripts')
+    @include('products.ajaxFormScript')
+
     document.addEventListener('DOMContentLoaded', function () {
         actionOnSubmittedForm = function(form) {
             var addProductForm = `@include('products.addProductForm', ['productId' => 0])`;
